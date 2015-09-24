@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title id="title">Arne</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css.css">
+        
+        <style type="text/css">
+            body {
+                overflow:hidden;
+            }
+        </style>
+        <script type="text/javascript">
+        
+        //This some scripts stolen from plugapi4py-houdhakker2-2.c9.io/song
+           indexList = 0; 
+           var currenttime=0,timer=setInterval(function(){currenttime++},1000);
+            function callMe(){
+                                var xmlhttp;
+                if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp=new XMLHttpRequest();
+                }else{// code for IE6, IE5
+                    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.onreadystatechange=function(){
+                        if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                            	jsontext = xmlhttp.responseText;
+				truecallme();
+				randomPlay();
+                        }
+                        
+                    };
+                    
+    //select the playlist you want to play must be json file and be in same directory of html page
+		pl = getURLParameter('pl');
+                xmlhttp.open("GET",pl,true);
+                xmlhttp.send();
+		
+		if (0 == 1){
+                        indexList = indexList + 1;
+                        currenttime = 0;
+                        changestate = 1;
+                        var iframe = document.getElementById('song');
+                        iframe.src = iframe.src;
+                        console.log('change places');
+                }
+
+
+
+
+            }
+function randomPlay(){
+//GET rand causes playlist to be played in random order
+
+	rand = getURLParameter('rand');
+
+//GET songnum plays specfic song and can be combined with rand to play a specfic song to go random
+	songnum = getURLParameter('songnum');
+	if (rand > 0){
+		indexList = Math.floor(Math.random() * json.data.length - 1) + 0  
+	}
+	if (songnum) {
+	  
+		indexList = songnum;
+	}
+}
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+}
+	    function truecallme(){
+
+                                //console.log(xmlhttp.responseText);
+                                jsonstring=JSON.stringify(jsontext);
+                            json = JSON.parse(jsonstring);//s.substr(1))
+                            json = JSON.parse(json);
+                                outside = json.data[indexList].duration;
+                          var d = new Date();
+                            var n = d.toISOString();
+                    //            console.log('first'+json);
+                            document.getElementById("title").innerHTML = json.data[indexList].title + " " +currenttime + " / " + json.data[indexList].duration ;
+                            if (json.data[indexList].format == 1){
+                                if (document.getElementById("song").src.indexOf("https://www.youtube.com/embed/"+json.data[indexList].cid) == -1 ){
+                                    document.getElementById("song").src = "https://www.youtube.com/embed/"+json.data[indexList].cid+"?autoplay=1&cc_load_policy=1&controls=0&disablekb=1&modestbranding=1&playsinline=1&rel=0&showinfo=0&autohide=0&color=white&theme=light&start="+  ((Math.floor((new Date() - Date.parse(json.data[indexList].time))/1000)) + (60 * new Date().getTimezoneOffset()));
+                                }
+                            }else{
+                                if (document.getElementById("song").src.indexOf("https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/"+json.data[indexList].cid) == -1 ){
+                                    document.getElementById("song").src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/"+json.data[indexList].cid+"&auto_play=true";
+                                }
+                            }
+
+                if (currenttime > outside){
+                        indexList = indexList + 1;
+			randomPlay();	
+                        currenttime = 0;
+                        changestate = 1;
+                        var iframe = document.getElementById('song');
+                        iframe.src = iframe.src;
+                        //changing the video
+                        console.log('change places');
+                }
+
+
+   		}
+
+            window.onload = function(){
+		callMe();
+                window.setInterval(function(){truecallme();},1000);
+
+            }
+		if (currenttime > outside){	
+			indexList = indexList + 1;
+			currenttime = 0;
+			changestate = 1;
+			var iframe = document.getElementById('song');
+			iframe.src = iframe.src;
+			//changing the video
+			console.log('change places');
+		}
+		window.onresize = function(event) {
+                document.getElementById("song").height = document.height;
+            };
+
+        </script>
+    </head>
+    <body><div style="position: relative;"><iframe id="song" width="100%" style="height:100vh;" src="" frameborder="0" allowfullscreen></iframe>
+ AMSD ASDAS DAS DASDKASDASMDASDMASDAWIDQMWD<div id=foo>failed attempt at control panels</div></div>
+
+</body>
+</html>
