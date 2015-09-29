@@ -1,174 +1,212 @@
+
 <!DOCTYPE html>
 <html>
-
-<head>
-    <title id="title">Arne</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css.css">
-    <style type="text/css">
-        body {
-            overflow: hidden;
-        }
-    </style>
-    <script type="text/javascript">
-        indexList = 0;
-        outside = 9;
-        var currenttime = 0,
-            timer = setInterval(function() {
-                currenttime++
-            }, 1000);
-
-        function callMe() {
-            xmlhttp = 1;
-            if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp = new XMLHttpRequest();
-            } else { // code for IE6, IE5
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    <head>
+        <title id="title">Dropbox.pro</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css.css">
+        <style type="text/css">
+            body {
+                overflow:hidden;
             }
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    jsontext = xmlhttp.responseText;
-                    truecallme();
-                    randomPlay();
+        </style>
+        <script type="text/javascript">
+           indexList = 0;
+	   outside=9;
+           var currenttime=0,timer=setInterval(function(){currenttime++},1000);
+            function callMe(){
+                xmlhttp = 1;
+		jsonText = localStorage.getItem('playlist0')
+		if (jsonText){
+			console.log(jsonText);
+			jsonText = localStorage.getItem('playlist0');
+		}
+		else {
+                if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp=new XMLHttpRequest();
+                }else{// code for IE6, IE5
+                    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
                 }
 
+
+
+                xmlhttp.onreadystatechange=function(){
+                        if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                            	jsontext = xmlhttp.responseText;
+				truecallme();
+				randomPlay();
+                        }
+                        
+                    };
+		pl = getURLParameter('pl');
+                xmlhttp.open("GET",pl,true);
+                xmlhttp.send();
+            }
+	    }
+
+	lastsongnumber = 9999999;
+function randomPlay(){
+	rand = getURLParameter('rand');
+	songnum = getURLParameter('songnum');
+	if (rand > 0){
+		indexList = Math.floor(Math.random() * json.data.length - 1) + 0  
+	}
+	if (songnum != null  && songnum != lastsongnumber) {
+		indexList = songnum;
+		lastsongnumber = songnum;
+	}
+}
+
+
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+}
+	    function truecallme(){
+
+                                //console.log(xmlhttp.responseText);
+                                jsonstring=JSON.stringify(jsontext);
+                            json = JSON.parse(jsonstring);//s.substr(1))
+                            json = JSON.parse(json);
+                                outside = json.data[indexList].duration;
+                          var d = new Date();
+                            var n = d.toISOString();
+                    //            console.log('first'+json);
+                            document.getElementById("title").innerHTML = json.data[indexList].title + " " +currenttime + " / " + json.data[indexList].duration ;
+                            if (json.data[indexList].format == 1){
+                                if (document.getElementById("song").src.indexOf("https://www.youtube.com/embed/"+json.data[indexList].cid) == -1 ){
+document.getElementById('over').innerHTML = indexList;
+document.getElementById('songname').innerHTML = json.data[indexList].title;
+fadeIn('songname',9);
+setTimeout(function(){  fadeOut('songname');  }, 10000);
+                                    document.getElementById("song").src = "https://www.youtube.com/embed/"+json.data[indexList].cid+"?autoplay=1&cc_load_policy=1&controls=0&disablekb=1&modestbranding=1&playsinline=1&rel=0&showinfo=0&autohide=0&color=white&theme=light&start="+  ((Math.floor((new Date() - Date.parse(json.data[indexList].time))/1000)) + (60 * new Date().getTimezoneOffset()));
+                                }
+                            }else{
+
+document.getElementById('over').innerHTML = indexList;
+document.getElementById('songname').innerHTML = json.data[indexList].title;
+fadeIn('songname',9);
+setTimeout(function(){  fadeOut('songname');  }, 10000);
+                                if (document.getElementById("song").src.indexOf("https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/"+json.data[indexList].cid) == -1 ){
+                                    document.getElementById("song").src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/"+json.data[indexList].cid+"&auto_play=true";
+                                }
+                            }
+
+                if (currenttime > outside){
+                        indexList = indexList + 1;
+			randomPlay();	
+                        currenttime = 0;
+                        changestate = 1;
+                        var iframe = document.getElementById('song');
+                        iframe.src = iframe.src;
+                        console.log('change places');
+                }
+
+
+   		}
+
+            window.onload = function(){
+		callMe();
+                window.setInterval(function(){truecallme();},1000);
+
+            }
+		if (currenttime > outside){	
+//			indexList = indexList + 1;
+//			currenttime = 0;
+//			changestate = 1;
+//			var iframe = document.getElementById('song');
+//			iframe.src = iframe.src;
+//			console.log('change places');
+            changeState();
+		}
+		window.onresize = function(event) {
+                document.getElementById("song").height = document.height;
             };
-            pl = getURLParameter('pl');
-            xmlhttp.open("GET", pl, true);
-            xmlhttp.send();
+function changeState(){
 
 
-
-
-        }
-
-        lastsongnumber = 9999999;
-
-        function randomPlay() {
-            rand = getURLParameter('rand');
-            songnum = getURLParameter('songnum');
-            if (rand > 0) {
-                indexList = Math.floor(Math.random() * json.data.length - 1) + 0
-            }
-            if (songnum != null && songnum != lastsongnumber) {
-                indexList = songnum;
-                lastsongnumber = songnum;
-            }
-        }
-
-
-        function getURLParameter(name) {
-            return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null
-        }
-
-        function truecallme() {
-
-            //console.log(xmlhttp.responseText);
-            jsonstring = JSON.stringify(jsontext);
-            json = JSON.parse(jsonstring); //s.substr(1))
-            json = JSON.parse(json);
-            outside = json.data[indexList].duration;
-            var d = new Date();
-            var n = d.toISOString();
-            //            console.log('first'+json);
-            document.getElementById("title").innerHTML = json.data[indexList].title + " " + currenttime + " / " + json.data[indexList].duration;
-            if (json.data[indexList].format == 1) {
-                if (document.getElementById("song").src.indexOf("https://www.youtube.com/embed/" + json.data[indexList].cid) == -1) {
-                    document.getElementById('over').innerHTML = indexList;
-                    document.getElementById('songname').innerHTML = json.data[indexList].title;
-                    fadeIn('songname', 9);
-                    setTimeout(function() {
-                        fadeOut('songname');
-                    }, 10000);
-                    document.getElementById("song").src = "https://www.youtube.com/embed/" + json.data[indexList].cid + "?autoplay=1&cc_load_policy=1&controls=0&disablekb=1&modestbranding=1&playsinline=1&rel=0&showinfo=0&autohide=0&color=white&theme=light&start=" + ((Math.floor((new Date() - Date.parse(json.data[indexList].time)) / 1000)) + (60 * new Date().getTimezoneOffset()));
-                }
-            } else {
-
-                document.getElementById('over').innerHTML = indexList;
-                document.getElementById('songname').innerHTML = json.data[indexList].title;
-                fadeIn('songname', 9);
-                setTimeout(function() {
-                    fadeOut('songname');
-                }, 10000);
-                if (document.getElementById("song").src.indexOf("https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/" + json.data[indexList].cid) == -1) {
-                    document.getElementById("song").src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/" + json.data[indexList].cid + "&auto_play=true";
-                }
-            }
-
-            if (currenttime > outside) {
-                indexList = indexList + 1;
-                randomPlay();
-                currenttime = 0;
-                changestate = 1;
-                var iframe = document.getElementById('song');
-                iframe.src = iframe.src;
-                console.log('change places');
-            }
-
-
-        }
-
-        window.onload = function() {
-            callMe();
-            window.setInterval(function() {
-                truecallme();
-            }, 1000);
-
-        }
-        if (currenttime > outside) {
             indexList = indexList + 1;
-            currenttime = 0;
-            changestate = 1;
+           currenttime = 0;
+                 changestate = 1;
             var iframe = document.getElementById('song');
-            iframe.src = iframe.src;
-            console.log('change places');
-        }
-        window.onresize = function(event) {
-            document.getElementById("song").height = document.height;
-        };
+                 iframe.src = iframe.src;
+                console.log('change places');
+}
+  function fadeOut(id,val){ if(isNaN(val)){ val = 9;}
+  document.getElementById(id).style.opacity='0.'+val;
+  //For IE
+  document.getElementById(id).style.filter='alpha(opacity='+val+'0)';
+  if(val>0){
+    val = val - 1;
+    setTimeout('fadeOut("'+id+'",'+val+')',90);
+  }else{return;}
+}
 
-        function fadeOut(id, val) {
-            if (isNaN(val)) {
-                val = 9;
-            }
-            document.getElementById(id).style.opacity = '0.' + val;
-            //For IE
-            document.getElementById(id).style.filter = 'alpha(opacity=' + val + '0)';
-            if (val > 0) {
-                val = val - 1;
-                setTimeout('fadeOut("' + id + '",' + val + ')', 90);
-            } else {
-                return;
-            }
-        }
+function fadeIn(id,val){
+// ID of the element to fade, Fade value[min value is 0]
+  if(isNaN(val)){ val = 0;}
+  document.getElementById(id).style.opacity='0.'+val;
+  //For IE
+  document.getElementById(id).style.filter='alpha(opacity='+val+'0)';
+  if(val<9){
+    val = val + 1;
+    setTimeout('fadeIn("'+id+'",'+val+')',90);
+  }else{return;}
+}
+function ShowHide(divId)
+{
+    var div = document.getElementById(divId);
+    if(div.style.height == '0px')
+    {
+        div.style.height='';
+        div.style.width='';
+    }
+    else
+    {
+        div.style.height = '0px';
+        div.style.width = '30px';
+    }
+}
+function playlistgen() {
+  var ul = document.getElementById("playlistembed");
+  var li = document.createElement("li");
+  li.appendChild(document.createTextNode("Four"));
+  li.setAttribute("id", "element4"); // added line
+  ul.appendChild(li);
+  alert(li.id);
+}
+ShowHide("playlist");
+        </script>
+    </head>
+    <body><div style="position: relative;"><iframe id="song" width="100%" style="height:100vh;" src="" frameborder="0" allowfullscreen></iframe>
+<div id=over>Song Index</div><div id=songname></div></div>
+<footer class="footer"><a id=playlist class="footer-support-link" onhover=ShowHide("playlist") onclick=changeState() ><div id="users">
 
-        function fadeIn(id, val) {
-            // ID of the element to fade, Fade value[min value is 0]
-            if (isNaN(val)) {
-                val = 0;
-            }
-            document.getElementById(id).style.opacity = '0.' + val;
-            //For IE
-            document.getElementById(id).style.filter = 'alpha(opacity=' + val + '0)';
-            if (val < 9) {
-                val = val + 1;
-                setTimeout('fadeIn("' + id + '",' + val + ')', 90);
-            } else {
-                return;
-            }
-        }
-    </script>
-</head>
+  <ul id="playlistembed" class="list">
+<!--<div id="users">
+  <ul id="playlistembed" class="list">
+    <li>
+      <h3 class="name">Jonny Stromberg</h3>
+      <p class="born">1986</p>
+    </li>
+    <li>
+      <h3 class="name">Jonas Arnklint</h3>
+      <p class="born">1985</p>
+    </li>
+    <li>
+      <h3 class="name">Martina Elm</h3>
+      <p class="born">1986</p>
+    </li>
+    <li>
+      <h3 class="name">Gustaf Lindqvist</h3>
+      <p class="born">1983</p>
+    </li>
+  </ul>
+--!>
+</div>
 
-<body>
-    <div style="position: relative;">
-        <iframe id="song" width="100%" style="height:100vh;" src="" frameborder="0" allowfullscreen></iframe>
-        <div id=over>Song Index</div>
-        <div id=songname></div>
-    </div>
 
+</div></a></footer>
 </body>
-
 </html>
