@@ -1,7 +1,7 @@
 # VideoPlaylist
 An auto playlist player to replace the part of PlugDJ I care about.<br/>
 <br/>
-https://plugapi4py-houdhakker2-2.c9.io/song is were some of the code was taken from.
+https://plugapi4py-houdhakker2-2.c9.io/song is were some of the code was taken from.<br/>
 NOTES:<br/>
 I am trying to not use any 3rd party resources such as jquery. <br/>
 This is html should be able to be run without webserver.<br/>
